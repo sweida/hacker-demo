@@ -96,10 +96,10 @@ class App extends React.Component {
   showReply = item => {
     
     function fib(arr) {
-      arr.forEach(item => {
-        item.reply = false
-        if (item.child) {
-          fib(item.child)
+      arr.forEach(data => {
+        data.reply = false
+        if (data.child) {
+          fib(data.child)
         }
       })
     }
@@ -141,11 +141,9 @@ class App extends React.Component {
         <Card key={item.id}>
           <h4>
             {item.id}
-            {item.show ? (
-              <span onClick={() => this.handleCloseOrShow(item)}> [-]</span>
-            ) : (
-              <span onClick={() => this.handleCloseOrShow(item)}> [+]</span>
-            )}
+            <span onClick={() => this.handleCloseOrShow(item)}> 
+              {item.show ? '[-]' : '[+]' }
+            </span>
           </h4>
           {item.show && (
             <Card bordered={false}>
@@ -162,7 +160,7 @@ class App extends React.Component {
                     type="primary"
                     onClick={() => this.handleReply(item)}
                     style={{ margin: "10px 0" }}
-                    disabled={this.state.replyText==''}
+                    disabled={this.state.replyText == ""}
                   >
                     提交
                   </Button>
