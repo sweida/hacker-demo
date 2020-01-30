@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
 import { Form, Card, Input, Button, message, Row, Col } from "antd";
+import { generateSudoKu } from "./utils/generateData";
 
 let defaultArr = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
@@ -20,36 +21,29 @@ class App extends React.Component {
     };
   }
   componentWillMount() {
-    // 键盘监听
-    document.addEventListener("keydown", this.onKeyDown);
-
-    let gameData = [];
-    let status = [];
+    let gameData = generateSudoKu();
+    
     let defaultData = [];
     for (let i = 0; i < 9; i++) {
-      gameData.push([]);
-      status.push([]);
       defaultData.push([]);
-      for (let j = 1; j < 10; j++) {
-        status[i].push(false);
-        let beanlon = Math.random() > 0.5;
+      for (let j = 0; j < 9; j++) {
+        // 设置难度
+        let beanlon = this.setDiffcul(1)
         defaultData[i].push(beanlon);
-        gameData[i].push(j);
-        // beanlon ? gameData[i].push(j) : gameData[i].push(0);
-        // if (defaultData[i][j]) {
-        // } else {
-        //   gameData[i].push(0);
-        // }
+        if (!beanlon) gameData[i][j] = 0;
       }
-      this.shuffle(gameData[i]);
     }
+    
     this.setState({
       gameData: gameData,
-      statusArr: status,
+      statusArr: this.createStatus(),
       defaultData: defaultData
     });
   }
   componentDidMount() {
+    // 键盘监听
+    document.addEventListener("keydown", this.onKeyDown);
+
     this.setState({
       spanWidth: document.getElementsByTagName("span")[0].offsetWidth - 1,
       gameWidth: document.getElementById("game").offsetWidth
@@ -105,19 +99,52 @@ class App extends React.Component {
     });
   };
 
-  shuffle = arr => {
-    arr.sort(() => Math.random() - 0.5);
-    return arr;
-  };
+  createStatus = () => {
+    let status = new Array(9);
+    for (let i=0; i<9; i++) {
+      status[i] = new Array(9)
+      status[i].fill(false);
+    }
+    return status
+  }
 
   // 选中
   active = (x, y) => {
-    const { defaultData } = this.state;
-    if (!defaultData[x][y]) {
-      this.setState({
-        currentIndex: x * 10 + y
-      });
+    const {gameData, statusArr} = this.state
+    // 相同数字高亮显示
+    for (let i=0; i<9; i++) {
+      for (let j=0; j<9; j++) {
+        statusArr[i][j] = false
+        // 目标高亮
+        if (gameData[i][j] == gameData[x][y] && gameData[x][y]!=0) {
+          statusArr[i][j] = "commonNum";
+        }
+      }
     }
+    // 行高亮
+    statusArr[x].fill("common");
+    // 列高亮
+    for (let k=0; k<9; k++) {
+      statusArr[k][y] = "common";
+      console.log(k, y);
+    }
+    // 宫高亮
+    let gridX = ~~(x / 3) * 3;
+    let gridY = ~~(y / 3) * 3;
+    for (let i=gridX; i<gridX+3; i++) {
+      for (let j=gridY; j<gridY+3; j++) {
+        statusArr[i][j] = 'common'
+      }
+    }
+    // 目标高亮
+    statusArr[x][y] = "active";
+
+    console.log(statusArr);
+    
+    this.setState({
+      currentIndex: x * 10 + y,
+      statusArr: statusArr
+    });
   };
 
   // 标记颜色
@@ -125,80 +152,171 @@ class App extends React.Component {
     const { defaultData } = this.state;
     let x = ~~(this.state.currentIndex / 10);
     let y = this.state.currentIndex % 10;
-    let newRed = this.state.statusArr;
+    let newStatus = this.state.statusArr;
     if (!defaultData[x][y]) {
       if (this.state.statusArr[x][y] == status) {
-        newRed[x][y] = false;
+        newStatus[x][y] = false;
       } else {
-        newRed[x][y] = status;
+        newStatus[x][y] = status;
       }
       this.setState({
-        statusArr: newRed
+        statusArr: newStatus
       });
     }
   };
 
   // 设置数字
   setNumber = num => {
-    const { defaultData } = this.state;
+    const { defaultData, statusArr } = this.state;
     let x = ~~(this.state.currentIndex / 10);
     let y = this.state.currentIndex % 10;
     let newData = this.state.gameData;
     if (!defaultData[x][y]) {
       newData[x][y] = num;
+      statusArr[x][y] = false
       this.setState({
-        gameData: newData
+        gameData: newData,
+        statusArr: statusArr
       });
     }
+    // 填充数字后高亮其它数字
+    this.active(x, y)
   };
 
   // 设置难度系数
-  setDiffcul = () => {};
+  setDiffcul = (num) => {
+    return Math.random() > (num * 0.1);
+  };
 
   // 重新开始
   newGame = () => {
     this.componentWillMount();
   };
 
-  // 检测是否正确
-  checker = arr => {
-    let length = 9;
-    let marks = new Array(length);
-    marks.fill(true);
-
-    for (let i = 0; i < length - 1; i++) {
-      if (!marks[i]) {
-        continue;
-      }
-      const v = arr[i];
-      if (v == 0) {
-        marks[i] = false;
-        continue;
-      }
-      for (let j = i + 1; j < length; j++) {
-        if (v == arr[j]) {
-          marks[i] = marks[j] = false;
-        }
-      }
-    }
-    this.setState({
-      marks: marks
-    });
-    console.log(this.state.marks, 222);
-  };
-  // 提交
-  submit = () => {
-    const { gameData } = this.state;
-    // 检测是否填写完整
-    for (let i=0; i<gameData.length; i++) {
-      let check = gameData[i].every(item => {
+  // 检测是否填写完整
+  checkIsNull = arr => {
+    for (let i = 0; i < arr.length; i++) {
+      let check = arr[i].every(item => {
         return item > 0;
       });
       if (!check) {
         message.error("请填写完整");
         return false;
+      } 
+    }
+    return true
+  };
+
+  checkRow = (arr, row) => {
+    let marks = new Array(9);
+    marks.fill(true);
+    for (let i = 0; i < 9; i++) {
+      if (!marks[i]) {
+        continue;
+      }
+      if (arr[i] == 0) {
+        marks[i] = 'error';
+        continue;
+      }
+      for (let j = i + 1; j < 9; j++) {
+        if (arr[i] == arr[j]) {
+          marks[i] = marks[j] = 'error';
+        }
       }
     }
+    this.setState({
+      statusArr: marks
+    });
+  };
+  // 检测是否正确
+  checkGame() {
+    // 清空选中
+    this.setState({
+      currentIndex: null
+    });
+    // let status = this.createStatus()
+    let status = new Array(9);
+    for (let i=0; i<9; i++) {
+      status[i] = new Array(9)
+      status[i].fill(false);
+    };
+    console.log(status);
+    
+    let { gameData, defaultData } = this.state;
+
+    // 检查行
+    for (let i=0; i<9; i++) {
+      for (let j=0; j<8; j++) {
+        if (status[i][j]=='error') {
+          continue;
+        }
+        for (let row = j + 1; row < 9; row++) {
+          if (gameData[i][j] == gameData[i][row]) {
+            // status[i][j] = status[i][row] = "error";
+            defaultData[i][j]
+              ? (status[i][j] = false)
+              : (status[i][j] = "error");
+            defaultData[i][row]
+              ? (status[i][row] = false)
+              : (status[i][row] = "error");
+          }
+        }
+      }
+    }
+
+
+    // 检查列
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 8; j++) {
+        if (status[i][j] == "error") {
+          continue;
+        }
+        for (let col = j + 1; col < 9; col++) {
+          if (gameData[i][j] == gameData[col][j]) {
+            defaultData[i][j]
+              ? (status[i][j] = false)
+              : (status[i][j] = "error");
+            defaultData[col][j]
+              ? (status[col][j] = false)
+              : (status[col][j] = "error");
+            // status[i][j] = status[col][j] = "error";
+          }
+        }
+      }
+    }
+    this.setState({
+      statusArr: status
+    });
+    // this.setState({
+    //   statusArr: status
+    // });
+    // for (let i=0; i<9; i++) {
+    //   if (gameData[i][col] == num) {
+    //     return false
+    //   }
+    // }
+
+    // // 检查9宫格
+    // let ii = ~~(row / 3);
+    // let jj = ~~(col / 3);
+    // for (let i = ii * 3; i < ii * 3 + 3; i++) {
+    //   for (let j = jj * 3; j < jj * 3 + 3; j++) {
+    //     if (gameData[i][j] == num) {
+    //       return false;
+    //     }
+    //   }
+    // }
+
+    return true
+  }
+
+  // 提交
+  submit = () => {
+    const { gameData } = this.state;
+    if (!this.checkIsNull(gameData)) {
+      return false
+    }
+    this.checkGame()
   };
 
   render() {
@@ -211,6 +329,7 @@ class App extends React.Component {
       statusArr
     } = this.state;
 
+    // 自适应高度
     const gameStyle = {
       height: gameWidth,
       lineHeight: spanWidth + "px",
@@ -224,13 +343,7 @@ class App extends React.Component {
             key={childIndex}
             onClick={() => this.active(index, childIndex)}
             className={`${defaultData[index][childIndex] ? "defalut" : ""} ${
-              currentIndex == index * 10 + childIndex ? "active" : ""
-            } ${
-              statusArr[index][childIndex] == "red"
-                ? "red"
-                : statusArr[index][childIndex] == "yellow"
-                ? "yellow"
-                : ""
+              statusArr[index][childIndex] ? statusArr[index][childIndex] : ''
             }`}
           >
             {child != 0 ? child : ""}

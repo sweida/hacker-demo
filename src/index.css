@@ -42,23 +42,43 @@ li>span{
   border-right: 1px solid #ddd;
   color: #888;
 }
-li>span.defalut{
-  font-weight: bolder;
-  color: #444;
-}
+
 li>span:nth-child(3n) {
   border-right: 1px solid #333;
 }
-li>span.active{
-  background: #FFEB3B;
-  outline: 1px solid #FFC107;
+
+li>span.yellow {
+  background: #a3de5f;
+}
+li>span.error {
+  background: #ffdfdf;
 }
 li>span.red {
   background: #ff8cc0;
 }
-li>span.yellow {
-  background: #a3de5f;
+li>span.defalut {
+  font-weight: bolder;
+  color: #444;
+  background: #fff;
 }
+    
+
+li>span.defalut.active {
+  background: #946250;
+  color: #fff;
+}
+li>span.commonNum{
+  background: #80bb3b;
+  color: #fff;
+}
+li>span.common {
+  background: #ffefdb;
+}
+
+li>span.active {
+  background: #f1ca7f;
+}
+
 
 .numBox{
   margin-top: 30px;
@@ -82,6 +102,7 @@ li>span.yellow {
 .numBox span.red {
   background: #ff8cc0;
 }
+
 
 .menu{
   margin-top: 20px;
