@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/sudoku/static/css/main.c66a8607.chunk.css",
+    "main.js": "/sudoku/static/js/main.cdb4215e.chunk.js",
+    "runtime-main.js": "/sudoku/static/js/runtime-main.6d74f11d.js",
+    "static/css/2.daef33c7.chunk.css": "/sudoku/static/css/2.daef33c7.chunk.css",
+    "static/js/2.ba5309c4.chunk.js": "/sudoku/static/js/2.ba5309c4.chunk.js",
+    "index.html": "/sudoku/index.html",
+    "precache-manifest.d5e310b91ea4907fdb49e480fd3a21e8.js": "/sudoku/precache-manifest.d5e310b91ea4907fdb49e480fd3a21e8.js",
+    "service-worker.js": "/sudoku/service-worker.js"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.6d74f11d.js",
+    "static/css/2.daef33c7.chunk.css",
+    "static/js/2.ba5309c4.chunk.js",
+    "static/css/main.c66a8607.chunk.css",
+    "static/js/main.cdb4215e.chunk.js"
+  ]
+}
