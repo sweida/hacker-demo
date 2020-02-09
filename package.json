@@ -1,7 +1,6 @@
 {
   "name": "sudoku-react",
   "version": "1.0.0",
-  "homepage" : "http://sweida.github.io/sudoku",
   "private": true,
   "dependencies": {
     "antd": "^3.25.2",

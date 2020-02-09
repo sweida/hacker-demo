@@ -117,6 +117,8 @@ class App extends React.Component {
       defaultData: defaultData,
       marksStatus: createArray()
     });
+    console.log(gameData);
+    
   };
 
   successModal = () => {
