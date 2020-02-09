@@ -82,7 +82,7 @@ export const generateSudoKu = () => {
 	const start = Date.now();
 	while (!sudoku.makeDigits());
 	const end = Date.now();
-	console.log(end - start);
-	console.log(sudoku.digits);
+	// console.log(end - start);
+	// console.log(sudoku.digits);
 	return sudoku.digits;
 }

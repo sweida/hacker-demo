@@ -1,9 +1,12 @@
 import React from "react";
 import "./App.css";
-import { Form, Card, Input, Button, message, Modal, Icon, Row, Col } from "antd";
+import { Button, message, Modal, Select } from "antd";
 import { generateSudoKu } from "./utils/generateData";
 
+const { Option } = Select;
+
 let defaultArr = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+// 创建一个 9X9 数组
 const createArray = () => {
   let array = new Array(9);
   for (let i = 0; i < 9; i++) {
@@ -14,40 +17,32 @@ const createArray = () => {
 };
 let defalultMarks = createArray()
 
+// 获取宫的原坐标
+function getboxesIndex(cellIndex, boxIndex) {
+  this.rowIndex = ~~(cellIndex / 3) + ~~(boxIndex / 3) * 3;
+  this.colIndex = (cellIndex % 3) + (boxIndex % 3) * 3;
+};
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       spanWidth: "",
       gameWidth: "",
+      currentIndex: null,
       gameData: [],
       defaultData: [],
       statusArr: [],
-      marksStatus: createArray(),
+      difficulty: "4",
+      marksStatus: [],
       currentYellow: null,
       currentRed: null
     };
   }
   componentWillMount() {
-    let gameData = generateSudoKu();
-
-    let defaultData = [];
-    for (let i = 0; i < 9; i++) {
-      defaultData.push([]);
-      for (let j = 0; j < 9; j++) {
-        // 设置难度
-        let beanlon = this.setDiffcul(1);
-        defaultData[i].push(beanlon);
-        if (!beanlon) gameData[i][j] = 0;
-      }
-    }
-
-    this.setState({
-      gameData: gameData,
-      statusArr: createArray(),
-      defaultData: defaultData
-    });
+    this.initGame();
   }
+
   componentDidMount() {
     // 键盘监听
     document.addEventListener("keydown", this.onKeyDown);
@@ -96,26 +91,46 @@ class App extends React.Component {
     }
   };
 
-  successModal = () => {
-    Modal.success({
-      content: '答案正确！',
-    });
-  }
+  // 设置难度系数
+  setDiffcul = num => {
+    return Math.random() > Number(num) * 0.1;
+  };
 
-  handleChange = (name, e) => {
+  // 开始游戏
+  initGame = () => {
+    let gameData = generateSudoKu();
+    let defaultData = [];
+
+    for (let i = 0; i < 9; i++) {
+      defaultData.push([]);
+      for (let j = 0; j < 9; j++) {
+        // 设置难度
+        let beanlon = this.setDiffcul(this.state.difficulty);
+        defaultData[i].push(beanlon);
+        if (!beanlon) gameData[i][j] = 0;
+      }
+    }
+
     this.setState({
-      [name]: e.target.value
+      gameData: gameData,
+      statusArr: createArray(),
+      defaultData: defaultData,
+      marksStatus: createArray()
     });
   };
 
-  // 创建一个 9X9 数组
-  createArray = () => {
-    let status = new Array(9);
-    for (let i = 0; i < 9; i++) {
-      status[i] = new Array(9);
-      status[i].fill(false);
-    }
-    return status;
+  successModal = () => {
+    Modal.success({
+      content: "答案正确！"
+    });
+  };
+
+  handleSelect = (name, e) => {
+    this.setState({
+      [name]: e
+    }, () => {
+      this.initGame();
+    });
   };
 
   // 选中
@@ -124,11 +139,11 @@ class App extends React.Component {
 
     // 清空选中
     if (statusArr[x][y] == "active") {
-      let status = createArray()
+      let status = createArray();
       this.setState({
         statusArr: status
       });
-      return
+      return;
     }
 
     // 列高亮
@@ -201,16 +216,6 @@ class App extends React.Component {
     this.active(x, y);
   };
 
-  // 设置难度系数
-  setDiffcul = num => {
-    return Math.random() > num * 0.1;
-  };
-
-  // 重新开始
-  newGame = () => {
-    this.componentWillMount();
-  };
-
   // 检测是否填写完整
   checkIsNull = arr => {
     for (let i = 0; i < arr.length; i++) {
@@ -257,9 +262,6 @@ class App extends React.Component {
         }
       }
     }
-    this.setState({
-      marksStatus: defalultMarks
-    });
   };
 
   // 检测列
@@ -279,28 +281,34 @@ class App extends React.Component {
         }
       }
     }
-    this.setState({
-      marksStatus: defalultMarks
-    });
+  };
+
+  // 将宫 3X3 转换成一行
+  boxsArr = num => {
+    const { gameData } = this.state;
+    let row = ~~(num / 3) * 3;
+    let col = (num % 3) * 3;
+    let arrayData = [];
+    for (let i = row; i < row + 3; i++) {
+      for (let j = col; j < col + 3; j++) {
+        arrayData.push(gameData[i][j]);
+      }
+    }
+    return arrayData;
   };
 
   // 检测宫
   checkBoxs = () => {
-    const { gameData } = this.state;
-
     for (let boxIndex = 0; boxIndex < 9; boxIndex++) {
-      const boxes = [];
+      const boxes = this.boxsArr(boxIndex);
       const marks = this.checkArray(boxes);
       for (let cellIndex = 0; cellIndex < 9; cellIndex++) {
         if (marks[cellIndex] == "error") {
-          const { rowIndex, colIndex } = []
+          const { rowIndex, colIndex } = new getboxesIndex(cellIndex, boxIndex);
           defalultMarks[rowIndex][colIndex] = "error";
         }
       }
     }
-    this.setState({
-      marksStatus: defalultMarks
-    });
   };
 
   // 提交
@@ -315,15 +323,19 @@ class App extends React.Component {
     });
 
     defalultMarks = createArray();
-    this.checkRows()
-    this.checkCols()
+    this.checkRows();
+    this.checkCols();
+    this.checkBoxs();
+    this.setState({
+      marksStatus: defalultMarks
+    });
     let isSuccess = defalultMarks.every(row =>
       row.every(mark => mark == false)
     );
     if (isSuccess) {
       this.successModal();
     } else {
-      message.error('答案有误！')
+      message.error("答案有误！");
     }
   };
 
@@ -334,7 +346,7 @@ class App extends React.Component {
       gameWidth,
       defaultData,
       statusArr,
-      marksStatus
+      marksStatus,
     } = this.state;
 
     // 自适应高度
@@ -383,7 +395,17 @@ class App extends React.Component {
           ></span>
         </div>
         <div className="menu">
-          <Button type="primary" onClick={this.newGame}>
+          <Select
+            defaultValue={this.state.difficulty}
+            style={{ width: 100 }}
+            onChange={e => this.handleSelect("difficulty", e)}
+          >
+            <Option value="3">简单模式</Option>
+            <Option value="4">普通模式</Option>
+            <Option value="5">困难模式</Option>
+            <Option value="6">地狱模式</Option>
+          </Select>
+          <Button type="primary" onClick={this.initGame}>
             重新开始
           </Button>
           <Button type="primary" onClick={this.submit}>
