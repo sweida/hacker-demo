@@ -49,6 +49,8 @@ const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
+const lessRegex = /\.less$/;
+const lessModuleRegex = /\.module\.less$/;
 
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
@@ -81,56 +83,60 @@ module.exports = function(webpackEnv) {
   const env = getClientEnvironment(publicUrl);
 
   // common function to get style loaders
-  const getStyleLoaders = (cssOptions, preProcessor) => {
+  const getStyleLoaders = (cssOptions, lessOptions, preProcessor) => {
     const loaders = [
-      isEnvDevelopment && require.resolve('style-loader'),
+      isEnvDevelopment && require.resolve("style-loader"),
       isEnvProduction && {
         loader: MiniCssExtractPlugin.loader,
-        options: shouldUseRelativeAssetPaths ? { publicPath: '../../' } : {},
+        options: shouldUseRelativeAssetPaths ? { publicPath: "../../" } : {}
       },
       {
-        loader: require.resolve('css-loader'),
-        options: cssOptions,
+        loader: require.resolve("css-loader"),
+        options: cssOptions
+      },
+      {
+        loader: require.resolve("less-loader"),
+        options: lessOptions
       },
       {
         // Options for PostCSS as we reference these options twice
         // Adds vendor prefixing based on your specified browser support in
         // package.json
-        loader: require.resolve('postcss-loader'),
+        loader: require.resolve("postcss-loader"),
         options: {
           // Necessary for external CSS imports to work
           // https://github.com/facebook/create-react-app/issues/2677
-          ident: 'postcss',
+          ident: "postcss",
           plugins: () => [
-            require('postcss-flexbugs-fixes'),
-            require('postcss-preset-env')({
+            require("postcss-flexbugs-fixes"),
+            require("postcss-preset-env")({
               autoprefixer: {
-                flexbox: 'no-2009',
+                flexbox: "no-2009"
               },
-              stage: 3,
+              stage: 3
             }),
             // Adds PostCSS Normalize as the reset css with default options,
             // so that it honors browserslist config in package.json
             // which in turn let's users customize the target behavior as per their needs.
-            postcssNormalize(),
+            postcssNormalize()
           ],
-          sourceMap: isEnvProduction && shouldUseSourceMap,
-        },
-      },
+          sourceMap: isEnvProduction && shouldUseSourceMap
+        }
+      }
     ].filter(Boolean);
     if (preProcessor) {
       loaders.push(
         {
-          loader: require.resolve('resolve-url-loader'),
+          loader: require.resolve("resolve-url-loader"),
           options: {
-            sourceMap: isEnvProduction && shouldUseSourceMap,
-          },
+            sourceMap: isEnvProduction && shouldUseSourceMap
+          }
         },
         {
           loader: require.resolve(preProcessor),
           options: {
-            sourceMap: true,
-          },
+            sourceMap: true
+          }
         }
       );
     }
@@ -305,6 +311,19 @@ module.exports = function(webpackEnv) {
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
         'react-native': 'react-native-web',
         // Allows for better profiling with ReactDevTools
+                // 绝对路径的引用  
+        '@': path.resolve(__dirname, '../src/'),  // 这样如果再调用Src下的Api文件的话，就可直接 import Api from '@/src'
+
+        // 少侠留步，如果还想偷懒，老衲也可以给你看看下面....
+        'component': path.resolve(__dirname, '../src/component'),
+        'utils': path.resolve(__dirname, '../src/utils'),
+        'assets': path.resolve(__dirname, '../src/assets'),
+        'pages': path.resolve(__dirname, '../src/pages'),
+        'server': path.resolve(__dirname, '../src/server'),
+        'style': path.resolve(__dirname, '../src/style'),
+        'router': path.resolve(__dirname, '../src/router'),
+        'store': path.resolve(__dirname, '../src/store'),
+        
         ...(isEnvProductionProfile && {
           'react-dom$': 'react-dom/profiling',
           'scheduler/tracing': 'scheduler/tracing-profiling',
@@ -494,6 +513,24 @@ module.exports = function(webpackEnv) {
                 },
                 'sass-loader'
               ),
+            },
+            {
+              test: lessRegex,
+              exclude: cssModuleRegex,
+              use: getStyleLoaders({
+                importLoaders: 1,
+                sourceMap: isEnvProduction && shouldUseSourceMap,
+              }),
+              sideEffects: true,
+            },
+            {
+              test: lessModuleRegex,
+              use: getStyleLoaders({
+                importLoaders: 1,
+                sourceMap: isEnvProduction && shouldUseSourceMap,
+                modules: true,
+                getLocalIdent: getCSSModuleLocalIdent,
+              }),
             },
             // "file" loader makes sure those assets get served by WebpackDevServer.
             // When you `import` an asset, you get its (virtual) filename.

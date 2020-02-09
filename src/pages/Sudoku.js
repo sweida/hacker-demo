@@ -1,7 +1,7 @@
 import React from "react";
-import "../style/sudoku.css";
+import "style/sudoku.less";
 import { Button, message, Modal, Select } from "antd";
-import { generateSudoKu } from "../utils/generateData";
+import { generateSudoKu } from "utils/generateData";
 
 const { Option } = Select;
 
@@ -49,7 +49,7 @@ class Sudoku extends React.Component {
 
     this.setState({
       spanWidth: document.getElementsByTagName("span")[0].offsetWidth - 1,
-      gameWidth: document.getElementById("game").offsetWidth
+      gameWidth: document.getElementById("sudoku").offsetWidth
     });
   }
 
@@ -365,9 +365,7 @@ class Sudoku extends React.Component {
             className={`${defaultData[index][childIndex] ? "defalut" : ""} ${
               statusArr[index][childIndex] ? statusArr[index][childIndex] : ""
             } ${
-              marksStatus[index][childIndex]
-                ? marksStatus[index][childIndex]
-                : ""
+              marksStatus[index][childIndex] ? marksStatus[index][childIndex] : ""
             }`}
           >
             {child != 0 ? child : ""}
@@ -383,7 +381,7 @@ class Sudoku extends React.Component {
     return (
       <>
         <h3>数独游戏</h3>
-        <div id="game" style={gameStyle}>
+        <div id="sudoku" style={gameStyle}>
           {gameBox}
         </div>
         <div className="numBox">

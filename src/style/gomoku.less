@@ -1,0 +1,79 @@
+/* 五子棋css */
+#gomoku {
+    display: flex;
+    flex-direction: column;
+
+    li {
+        display: flex;
+        flex: 1;
+    }
+
+    li:first-child {
+        border-top: 1px solid #333;
+    }
+
+    li>span {
+        width: 30px;
+        background: #f5cf91;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .piece {
+        width: 16px;
+        height: 16px;
+        display: block;
+        border-radius: 50%;
+        z-index: 10;
+        position: relative;
+        &.black {
+            background: #000;
+        }
+        &.white {
+            background: #e5e5e5;
+        }
+        &::before{
+            content: "";
+            position: absolute;
+            width: 4px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            transform: rotate(-28deg);
+            top: 2px;
+            left: 4px;
+        }
+        &::after {
+            content: "";
+            position: absolute;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            border-left: 1px solid #fff;
+            border-top: 2px solid transparent;
+            border-bottom: 2px solid transparent;
+        }
+    }
+
+    li>span::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        left: 0;
+        border: 1px solid #885233;
+    }
+
+    li>span::after {
+        content: "";
+        position: absolute;
+        height: 100%;
+        top: 0;
+        border: 1px solid #885233;
+    }
+
+}
+

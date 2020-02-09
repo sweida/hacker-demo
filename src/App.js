@@ -7,8 +7,8 @@ import {
   Redirect
 } from "react-router-dom";
 // import NotFound from "component/notFound";
-import router from "./router/index";
-import history from "./router/history";
+import router from "router/index";
+import history from "router/history";
 
 
 class App extends Component {
