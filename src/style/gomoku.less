@@ -1,29 +1,125 @@
+@defColor: #f5cf91;
+
+
+
 /* 五子棋css */
 #gomoku {
     display: flex;
     flex-direction: column;
+    position: fixed;
+    width: 100%;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: #ced0b8;
+    padding: 15px;
+
+    h3{
+        font-family: cursive;
+        color: #af4e47;
+        font-weight: bold;
+        font-size: 26px;
+        margin-bottom: 0;
+    }
+
+    .checkerboard{
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        border: 3px solid #bf9000;
+        outline: 3px solid #e4ac00;
+    }
+    .sideBox{
+        display: flex;
+        justify-content: space-between;
+        margin: 20px 0;
+        .text{
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            font-family: fantasy;
+            flex: 1.4;
+            display: flex;
+            color: #af4e47;
+            span{
+                flex: 1
+            }
+        }
+        .side{
+            flex: 1;
+            display: flex;
+            align-items: center;
+            height: 30px;
+            >span{
+                margin: 0 5px;
+            }
+            &.end{
+                justify-content: flex-end;
+            }
+        }
+    }
 
     li {
         display: flex;
         flex: 1;
     }
 
-    li:first-child {
-        border-top: 1px solid #333;
-    }
-
     li>span {
-        width: 30px;
-        background: #f5cf91;
+        flex: 1;
+        background: @defColor;
         position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
+        &::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            left: 0;
+            border: 1px solid #885233;
+        }
+        &::after {
+            content: "";
+            position: absolute;
+            height: 100%;
+            top: 0;
+            border: 1px solid #885233;
+        }
+        &:first-child {
+            &::before {
+                left: 50%;
+                width: 50%
+            }
+        }
+        &:last-child {
+            &::before {
+                width: 50%
+            }
+        }
+        .grid{
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #652500;
+            border-radius: 50%;
+            z-index: 1;
+        }
+    }
+    li:first-child>span {
+        &::after {
+            top: 50%;
+            height: 50%;
+        }
+    }
+    li:last-child>span {
+        &::after {
+            height: 50%
+        }
     }
 
     .piece {
-        width: 16px;
-        height: 16px;
+        width: 18px;
+        height: 18px;
         display: block;
         border-radius: 50%;
         z-index: 10;
@@ -33,6 +129,17 @@
         }
         &.white {
             background: #e5e5e5;
+        }
+        &.last {
+            box-shadow: 0px 0px 3px 2px #e65016;
+        }
+        &.judge{
+            /* animation: flash .8s infinite; */
+            box-shadow: 0px 0px 3px 2px #FFEB3B;
+        }
+        &.active {
+            /* animation: flash .8s infinite; */
+            box-shadow: 0px 0px 3px 2px #ab390f;
         }
         &::before{
             content: "";
@@ -59,21 +166,27 @@
         }
     }
 
-    li>span::before {
-        content: "";
-        position: absolute;
-        width: 100%;
-        left: 0;
-        border: 1px solid #885233;
-    }
-
-    li>span::after {
-        content: "";
-        position: absolute;
-        height: 100%;
-        top: 0;
-        border: 1px solid #885233;
+    .menu {
+        margin-top: 40px;
+        button{
+            margin-right: 20px;
+            background: #af4e47;
+            border-color: #af4e47;
+        }
     }
 
 }
 
+
+
+@keyframes flash{
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
