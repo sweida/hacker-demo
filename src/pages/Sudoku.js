@@ -1,5 +1,6 @@
 import React from "react";
 import "style/sudoku.less";
+import classNames from "classnames";
 import { Button, message, Modal, Select } from "antd";
 import { generateSudoKu } from "utils/generateData";
 
@@ -362,11 +363,11 @@ class Sudoku extends React.Component {
           <span
             key={childIndex}
             onClick={() => this.active(index, childIndex)}
-            className={`${defaultData[index][childIndex] ? "defalut" : ""} ${
-              statusArr[index][childIndex] ? statusArr[index][childIndex] : ""
-            } ${
-              marksStatus[index][childIndex] ? marksStatus[index][childIndex] : ""
-            }`}
+            className={classNames({
+              default: defaultData[index][childIndex],
+              [statusArr[index][childIndex]]: statusArr[index][childIndex],
+              [marksStatus[index][childIndex]]: marksStatus[index][childIndex]
+            })}
           >
             {child != 0 ? child : ""}
           </span>

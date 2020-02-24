@@ -1,7 +1,5 @@
 @defColor: #f5cf91;
 
-
-
 /* 五子棋css */
 #gomoku {
     display: flex;
@@ -117,7 +115,7 @@
         }
     }
 
-    .piece {
+    .chess {
         width: 18px;
         height: 18px;
         display: block;
@@ -125,10 +123,10 @@
         z-index: 10;
         position: relative;
         &.black {
-            background: #000;
+            background: radial-gradient(6px 6px at 9px 9px, #353535, #000);
         }
         &.white {
-            background: #e5e5e5;
+            background: radial-gradient(10px 10px at 10px 10px, #fff, #e2e2e2);
         }
         &.last {
             box-shadow: 0px 0px 3px 2px #e65016;

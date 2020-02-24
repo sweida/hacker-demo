@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, message } from 'antd'
+import classNames from "classnames";
 import "style/gomoku.less";
 
 // 创建一个 15X15 数组
@@ -114,7 +115,7 @@ class Gomoku extends React.Component {
   };
 
 	// 检测列
-  checkCol = (piece, x, y) => {
+  checkCol = (chess, x, y) => {
     let { gameData } = this.state;
     let leftNum = 0;
     let rightNum = 0;
@@ -122,13 +123,13 @@ class Gomoku extends React.Component {
     let hasRight = true;
     gameStatus[x][y] = "judge";
     for (let n = 1; n < 5; n++) {
-      if (x - n > -1 && hasLeft && gameData[x - n][y] == piece) {
+      if (x - n > -1 && hasLeft && gameData[x - n][y] == chess) {
         leftNum++;
         gameStatus[x - n][y] = "judge";
       } else {
         hasLeft = false;
       }
-      if (x + n < 15 && hasRight && gameData[x + n][y] == piece) {
+      if (x + n < 15 && hasRight && gameData[x + n][y] == chess) {
         rightNum++;
         gameStatus[x + n][y] = "judge";
       } else {
@@ -144,7 +145,7 @@ class Gomoku extends React.Component {
   };
 
 	// 检测行
-  checkRow = (piece, x, y) => {
+  checkRow = (chess, x, y) => {
     let { gameData } = this.state;
     let leftNum = 0;
     let rightNum = 0;
@@ -152,13 +153,13 @@ class Gomoku extends React.Component {
     let hasRight = true;
     gameStatus[x][y] = "judge";
     for (let n = 1; n < 5; n++) {
-      if (y - n > -1 && hasLeft && gameData[x][y - n] == piece) {
+      if (y - n > -1 && hasLeft && gameData[x][y - n] == chess) {
         leftNum++;
         gameStatus[x][y - n] = "judge";
       } else {
         hasLeft = false;
       }
-      if (y + n < 15 && hasRight && gameData[x][y + n] == piece) {
+      if (y + n < 15 && hasRight && gameData[x][y + n] == chess) {
         rightNum++;
         gameStatus[x][y + n] = "judge";
       } else {
@@ -174,7 +175,7 @@ class Gomoku extends React.Component {
   };
 
 	// 左斜线
-  checkLeftSlash = (piece, x, y) => {
+  checkLeftSlash = (chess, x, y) => {
     let { gameData } = this.state;
     let leftNum = 0;
     let rightNum = 0;
@@ -182,13 +183,13 @@ class Gomoku extends React.Component {
     let hasRight = true;
     gameStatus[x][y] = "judge";
     for (let n = 1; n < 5; n++) {
-      if (x - n > -1 && y - n > -1 && hasLeft && gameData[x - n][y - n] == piece) {
+      if (x - n > -1 && y - n > -1 && hasLeft && gameData[x - n][y - n] == chess) {
         leftNum++;
         gameStatus[x - n][y - n] = "judge";
       } else {
         hasLeft = false;
       }
-      if (x + n < 15 && y + n < 15 && hasRight && gameData[x + n][y + n] == piece) {
+      if (x + n < 15 && y + n < 15 && hasRight && gameData[x + n][y + n] == chess) {
         rightNum++;
         gameStatus[x + n][y + n] = "judge";
       } else {
@@ -204,7 +205,7 @@ class Gomoku extends React.Component {
 	};
 	
 	// 右斜线
-	checkRightSlash = (piece, x, y) => {
+	checkRightSlash = (chess, x, y) => {
     let { gameData } = this.state;
     let leftNum = 0;
     let rightNum = 0;
@@ -212,13 +213,13 @@ class Gomoku extends React.Component {
     let hasRight = true;
     gameStatus[x][y] = "judge";
     for (let n = 1; n < 5; n++) {
-      if (x + n < 15 && y - n > -1 && hasLeft && gameData[x + n][y - n] == piece) {
+      if (x + n < 15 && y - n > -1 && hasLeft && gameData[x + n][y - n] == chess) {
         leftNum++;
         gameStatus[x + n][y - n] = "judge";
       } else {
         hasLeft = false;
       }
-      if (x - n > -1 && y + n < 15 && hasRight && gameData[x - n][y + n] == piece) {
+      if (x - n > -1 && y + n < 15 && hasRight && gameData[x - n][y + n] == chess) {
         rightNum++;
         gameStatus[x - n][y + n] = "judge";
       } else {
@@ -260,40 +261,49 @@ class Gomoku extends React.Component {
           <span key={childIndex} onClick={() => this.active(index, childIndex)}>
 						{ grid[index][childIndex] && <i className="grid"></i> }
             {	child && (
-              <i
-                className={`piece ${child} ${
-                  gameEnd && gameStatus[index][childIndex]
-                    ? gameStatus[index][childIndex]
-                    : ""
-                } ${
-                  last.index[0] == index && last.index[1] == childIndex
-                    ? "last"
-                    : ""
-                }`}
-              ></i>
+              <i className={classNames({
+                chess: true,
+                [child]: true,  // 棋子颜色
+                last: last.index[0] == index && last.index[1] == childIndex,   // 最后一步
+                judge: gameEnd && gameStatus[index][childIndex]    // 五子连棋
+              })}></i>
             )}
           </span>
         ))}
       </li>
     ));
+    const blackChess = classNames({
+      chess: true,
+      black: true,
+      active: current == "black"
+    });
+    const whiteChess = classNames({
+      chess: true,
+      white: true,
+      active: current == "white"
+    });
     return (
       <div id="gomoku">
-				<h3>五子棋</h3>
-				<div className="sideBox">
-					<div className="side">
-						<span className={`piece black ${current == "black" ? "active" : ""}`} ></span>
-						{current == "black" && <span>{gameEnd ? "黑棋胜✌️" : "黑棋下"}</span>}
-					</div>
-					<div className="text">
-						<span>{current == "black" && '👈'}</span>
-						<span>VS</span>
-						<span>{current == "white" && '👉'}</span>
-					</div>
-					<div className="side end">
-						{current == "white" && <span>{gameEnd ? "白棋胜✌️" : "白棋下"}</span>}
-						<span className={`piece white ${current == "white" ? "active" : ""}`} ></span>
-					</div>
-				</div>
+        <h3>五子棋</h3>
+        <div className="sideBox">
+          <div className="side">
+            <span className={blackChess}></span>
+            {current == "black" && (
+              <span>{gameEnd ? "黑棋胜✌️" : "黑棋下"}</span>
+            )}
+          </div>
+          <div className="text">
+            <span>{current == "black" && "👈"}</span>
+            <span>VS</span>
+            <span>{current == "white" && "👉"}</span>
+          </div>
+          <div className="side end">
+            {current == "white" && (
+              <span>{gameEnd ? "白棋胜✌️" : "白棋下"}</span>
+            )}
+            <span className={whiteChess}></span>
+          </div>
+        </div>
         <div className="checkerboard" style={gameStyle}>
           {gameBox}
         </div>

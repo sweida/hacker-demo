@@ -22,3 +22,8 @@ npm run build
 ```
 npm run deploy
 ```
+
+修改路径简短配置
+```
+config/webpack.config.js 318行
+```

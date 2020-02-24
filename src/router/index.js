@@ -1,11 +1,12 @@
-// import Home from '../views/home'
-// import Login from 'pages/sign/login'
-import Sudoku from '../pages/Sudoku';
-import Gomoku from "../pages/Gomoku";
+
+import Index from 'pages/Index'
+import Sudoku from 'pages/Sudoku';
+import Gomoku from "pages/Gomoku";
 
 
 const router = [
-  { path: "/", component: Sudoku },
+  { path: "/", component: Index },
+  { path: "/sudoku", component: Sudoku },
   { path: "/gomoku", component: Gomoku }
 ];
 
