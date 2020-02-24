@@ -1,19 +1,21 @@
 {
   "files": {
-    "main.css": "/static/css/main.2f1a7be5.chunk.css",
-    "main.js": "/static/js/main.d8dc5226.chunk.js",
-    "runtime-main.js": "/static/js/runtime-main.8ec16107.js",
+    "main.css": "/static/css/main.21c151e5.chunk.css",
+    "main.js": "/static/js/main.82635691.chunk.js",
+    "runtime-main.js": "/static/js/runtime-main.952dea0a.js",
     "static/css/2.e5d5c230.chunk.css": "/static/css/2.e5d5c230.chunk.css",
-    "static/js/2.3be18039.chunk.js": "/static/js/2.3be18039.chunk.js",
+    "static/js/2.65f8c3e7.chunk.js": "/static/js/2.65f8c3e7.chunk.js",
     "index.html": "/index.html",
-    "precache-manifest.63665707e8072b5e63c1b8c3a1f83e6f.js": "/precache-manifest.63665707e8072b5e63c1b8c3a1f83e6f.js",
-    "service-worker.js": "/service-worker.js"
+    "precache-manifest.69a6c375f411559ac4bed1318e9af946.js": "/precache-manifest.69a6c375f411559ac4bed1318e9af946.js",
+    "service-worker.js": "/service-worker.js",
+    "static/media/gomoku_logo.jpeg": "/static/media/gomoku_logo.e472b1f4.jpeg",
+    "static/media/sudoku_logo.jpeg": "/static/media/sudoku_logo.f2bfd9f1.jpeg"
   },
   "entrypoints": [
-    "static/js/runtime-main.8ec16107.js",
+    "static/js/runtime-main.952dea0a.js",
     "static/css/2.e5d5c230.chunk.css",
-    "static/js/2.3be18039.chunk.js",
-    "static/css/main.2f1a7be5.chunk.css",
-    "static/js/main.d8dc5226.chunk.js"
+    "static/js/2.65f8c3e7.chunk.js",
+    "static/css/main.21c151e5.chunk.css",
+    "static/js/main.82635691.chunk.js"
   ]
 }
