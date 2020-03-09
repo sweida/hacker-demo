@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import {Link} from 'react-router-dom'
 import classNames from "classnames";
-import gomokuLogo from 'assets/gomoku_logo.jpeg'
-import sudokuLogo from "assets/sudoku_logo.jpeg";
+import gomokuLogo from "assets/gomoku_logo.jpg";
+import sudokuLogo from "assets/sudoku_logo.jpg";
+import game2048Logo from "assets/2048_logo.jpg";
+import Reversi from "assets/gomoku_logo.jpg";
 import 'style/style.less'
 
 const gameData = [
@@ -14,6 +16,14 @@ const gameData = [
         name: '数独',
         img: sudokuLogo,
         url: 'sudoku'
+    }, {
+        name: '2048',
+        img: game2048Logo,
+        url: 'game2048'
+    }, {
+        name: '黑白棋',
+        img: Reversi,
+        url: 'reversi'
     }
 ]
 

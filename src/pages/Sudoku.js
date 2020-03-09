@@ -2,7 +2,7 @@ import React from "react";
 import "style/sudoku.less";
 import classNames from "classnames";
 import { Button, message, Modal, Select } from "antd";
-import { generateSudoKu } from "utils/generateData";
+import { generateSudoKu } from "utils/generateSudoku";
 
 const { Option } = Select;
 
